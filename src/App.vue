@@ -8,7 +8,9 @@
       </el-main>
 
       <el-footer>
-        footer
+          <router-link to="/">今日计划</router-link>
+          <router-link to="/week">周计划</router-link>
+          <router-link to="/history">历史</router-link>
       </el-footer>
     </el-container>
   </div>
@@ -34,6 +36,12 @@ export default {
         line-height 6rem
         flex-grow 0
 
+    .el-footer
+        display flex
+      a
+          flex-grow 1
+      a + a
+          border-left 1px silver solid
     .el-main {
         background-color #E9EEF3
         color #333
