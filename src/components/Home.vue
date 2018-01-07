@@ -5,15 +5,8 @@
           <el-button @click="addTask" class="task-btn">确定</el-button>
       </div>
       <div class="task-list">
-          <!--
-          对于每个任务有哪些操作？
-            1.标记已经完成
-            2.删除（添加错了）
-            3.完成是可能有备注
-
-          -->
-          <ul>
-              <li @click="showSlideToggle($event)" v-for="(task,index) in taskList">
+          <transition-group name="bounceLeft" tag="ul"  class="list-group">
+              <li @click="showSlideToggle($event)" v-for="(task,index) in taskList" :key="index">
                   <div class="index">{{index + 1}}</div>
                   <div class="task">{{task}}</div>
                   <div @click="showDetail($event)" class="more">.<br>.<br>.
@@ -27,12 +20,9 @@
                       备注：这次的完成度为70%，实在太累先放一放
                   </div>
               </li>
-          </ul>
+          </transition-group>
       </div>
-      <div @click="hiddenMask" class="mask">
-
-      </div>
-
+      <div @click="hiddenMask" class="mask"></div>
   </div>
 </template>
 
@@ -42,10 +32,7 @@ export default {
   data () {
       return {
           taskInput:"",
-          taskList:[
-              "做操作系统的高爆",
-              "看书"
-          ],
+          taskList:[],
           nowTargetE:""
     }
   },
@@ -83,7 +70,10 @@ export default {
             let targetE = $(e).parent().parent().parent().children(".task")
             targetE.toggleClass("addlinethrough")
         },
-
+        /**
+         * 展示备注
+         * @param event
+         */
         showDetail:function (event) {
             event.stopPropagation()
             let e = event.currentTarget
@@ -92,17 +82,26 @@ export default {
             targetE.toggle()
             $(".mask").toggle()
         },
-
+        /**
+         * 隐藏遮罩
+         */
         hiddenMask:function () {
             $(".mask").toggle()
             this.nowTargetE.toggle()
         },
-
+        /**
+         * 点击li的内容，展示detail
+         * @param event
+         */
         showSlideToggle:function (event) {
             let e = event.currentTarget
             let targetE = $(e).children(".remarks")
             targetE.slideToggle()
         },
+        /**
+         * 同上不过用在了备注这个按钮
+         * @param event
+         */
         showSlideToggle1:function (event) {
             let e = event.currentTarget
             let targetE = $(e).parent().parent().parent().children(".remarks")
