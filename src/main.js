@@ -14,10 +14,10 @@ Vue.use(ElementUI)
 // Vue.prototype.storage=Storage
 
 /* eslint-disable no-new */
-new Vue({
+var vm = new Vue({
     el: '#app',
     router,
     store,
     template: '<App/>',
-    components: { App }
+    components: { App },
 })

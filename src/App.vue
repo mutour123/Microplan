@@ -1,7 +1,7 @@
 <template>
   <div id="app">
       <el-container>
-          <el-header>{{isWeek}}{{actionList[action]}}</el-header>
+          <el-header>{{actionList[action]}}</el-header>
           <el-main>
               <keep-alive>
                   <transition mode="out-in"
@@ -11,16 +11,16 @@
               </keep-alive>
           </el-main>
           <el-footer>
-              <router-link @click.native="changeAction(0)" to="/">今日计划</router-link>
+              <router-link @click.native="changeAction(0)" to="/day">今日计划</router-link>
               <router-link @click.native="changeAction(1)" to="/week">周计划</router-link>
               <router-link @click.native="changeAction(2)" to="/history">历史</router-link>
           </el-footer>
       </el-container>
-      <div @click="showAdd($event)" class="edit-btn">
+     <!-- <div @click="showAdd($event)" class="edit-btn">
           <div  class="add-btn">add</div>
           <router-link @click.native="commit(true)" to="/edit" class="add-week-plan">周</router-link>
           <router-link @click.native="commit(false)" to="/edit" class="add-day-plan">日</router-link>
-      </div>
+      </div>-->
 
 
   </div>
@@ -36,16 +36,23 @@ export default {
                 "周计划",
                 "历史"
             ],
-            action:0
+            action: 0
         }
     },
-    methods:{
+    methods: {
+        /**
+         * 初始化action
+         * */
+        initAction: function () {
+            console.log("dajiahao")
+            this.action = store.get("action") ? store.get("action") : 0
+        },
         /**
          * 展示右下角的按钮
          * @param event
          */
-        showAdd:function (event) {
-            let e=event.currentTarget
+        showAdd: function (event) {
+            let e = event.currentTarget
             let target1 = $(e).children(".add-week-plan")
             let target2 = $(e).children(".add-day-plan")
             target1.toggleClass("changeBtnWeek")
@@ -55,17 +62,16 @@ export default {
          * 改变header的文字
          * @param num
          */
-        changeAction:function (num) {
-            this.action=num
-        },
-
-        commit:function (bool) {
-            this.$store.commit("changeIsWeek",bool)
+        changeAction: function (num) {
+            this.action = num
         }
     },
-    computed:{
-        isWeek(){
-            return this.$store.state.mutations.isWeek
+    mounted:function(){
+        this.initAction()
+    },
+    watch: {
+        action: function (newAction) {
+            store.set("action",this.action)
         }
     }
 }
@@ -98,6 +104,7 @@ export default {
         color #333
         flex-grow 1
         padding 1rem
+
     }
     .el-container
         flex-direction column
@@ -140,7 +147,7 @@ export default {
           background-color lawngreen
           line-height 5rem
           font-size 1.6rem
-          transition 1s
+          transition .5s
     .changeBtnWeek
         top -13rem
     .changeBtnDay

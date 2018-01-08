@@ -1,7 +1,8 @@
 // import action
 const state = {
-    isWeek: false
-};
+    isWeek: false,
+    taskList:[]
+}
 
 const mutations = {
     changeIsWeek(state,is){

@@ -5,14 +5,14 @@
           <el-button @click="addTask" class="task-btn">确定</el-button>
       </div>
       <div class="task-list">
-          <transition-group name="bounceLeft" tag="ul"  class="list-group">
-              <li @click="showSlideToggle($event)" v-for="(task,index) in taskList" :key="index">
+          <transition-group name="bounceLeft" tag="ul"  class="list-group test">
+              <li @click="showSlideToggle($event)" v-for="(task,index) in dayTaskList" :key="index">
                   <div class="index">{{index + 1}}</div>
-                  <div class="task">{{task}}</div>
+                  <div :class="{addlinethrough : task.state}" class="task">{{task.content}}</div>
                   <div @click="showDetail($event)" class="more">.<br>.<br>.
                       <div class="detail">
                           <div class="btn" @click="deleteTask(index)" >删除</div>
-                          <div class="btn" @click="finished($event)" >完成</div>
+                          <div class="btn" @click="finished(index)" >完成</div>
                           <div @click="showSlideToggle1($event)" class="btn">备注</div>
                       </div>
                   </div>
@@ -27,48 +27,49 @@
 </template>
 
 <script>
+
 export default {
   name: 'HelloWorld',
   data () {
       return {
           taskInput:"",
-          taskList:[],
-          nowTargetE:""
+          dayTaskList:[],
+          nowTargetE:""//点击遮罩隐藏more
     }
   },
     methods:{
         /*
-        * 添加task
-        * */
+       * 添加task
+       * */
         addTask:function () {
             if (this.taskInput == "")
                 return false
-            this.taskList.push(this.taskInput)
+            this.dayTaskList.push({content:this.taskInput,state:false})
             this.taskInput=""
-            store.set("taskList",this.taskList)
-        },
-        /**
-         * 初始化页面中需要使用的taskList
-         */
-        initTaskList:function(){
-            this.taskList=store.get("taskList")
-        },
-        /**
-         *删除任务
-         * @param index
-         */
-        deleteTask:function (index) {
-            this.taskList.splice(index,1)
-            store.set("taskList",this.taskList)
+            // store.set("dayTaskList",this.dayTaskList)
         },
         /**
          * 标记完成任务
          * @param event
          */
-        finished:function (event) {
-            let e = event.currentTarget
-            let targetE = $(e).parent().parent().parent().children(".task")
-            targetE.toggleClass("addlinethrough")
+        finished:function (num) {
+            this.dayTaskList[num].state = !this.dayTaskList[num].state
+            store.set("dayTaskList",this.dayTaskList)
+        },
+
+        /**
+         *删除任务
+         * @param index
+         */
+        deleteTask:function (index) {
+            this.dayTaskList.splice(index,1)
+            store.set("dayTaskList",this.dayTaskList)
+        },
+        /**
+         * 初始化页面中需要使用的taskList
+         */
+        initTaskList:function(){
+           this.dayTaskList=store.get("dayTaskList")?store.get("dayTaskList") : []
         },
         /**
          * 展示备注
@@ -111,41 +112,45 @@ export default {
     },
     mounted(){
         this.initTaskList()
-    }
+    },
+    watch:{
+        dayTaskList:function (newdayTaskList) {
+            store.set("dayTaskList",newdayTaskList)
+        }
+    },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
+    .add-task-content
+        width 100%
+        display flex
+    .task-input
+        font-size 1.6rem
+        flex-grow 1
+        display inline-block border 0
+        box-sizing border-box
+        height 4.5rem
+        padding 0
+        padding-left 0.5rem
+        border 0
+    .task-btn
+        width 8rem
+        padding 0
+        display inline-block
+        box-sizing border-box
+        height 4.5rem
+        vertical-align top
+        border 0
+        border-left 1px silver solid
     .home
         width 100%
-        display block
-  .add-task-content
-      width 100%
-      display flex
-  .task-input
-      font-size 1.6rem
-      flex-grow 1
-      display inline-block border 0
-      box-sizing border-box
-      height 4.5rem
-      padding 0
-      padding-left 0.5rem
-      border 0
-
-  .task-btn
-      width 8rem
-      padding 0
-      display inline-block
-      box-sizing border-box
-      height 4.5rem
-      vertical-align top
-      border 0
-      border-left 1px silver solid
-
+        height 100%
   .task-list
-      padding-top 2rem
       width 100%
+      height calc(100% - 5rem)
+      overflow auto
     ul
         margin 0
         padding 0
@@ -158,7 +163,6 @@ export default {
           line-height 5rem
           display flex
           flex-wrap wrap
-
         .index
             width 5%
             text-align center
@@ -206,14 +210,8 @@ export default {
       z-index 70
 
   .remarks
-      /*position absolute*/
-      /*top 5rem*/
       display block
       width 100%
       height 10rem
       display none
-
-
-
-
 </style>
