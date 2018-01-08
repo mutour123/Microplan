@@ -1,13 +1,28 @@
 <template>
     <div class="history">
-        这里是历史记录
+        获取当前时间，如果到了00:00就触发
 
     </div>
 </template>
 
 <script>
+
+
+
     export default {
-        name: "history"
+        name: "history",
+        data(){
+            return {
+
+            }
+        },
+        methods:{
+
+
+        },
+
+
+
     }
 </script>
 

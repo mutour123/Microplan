@@ -6,7 +6,7 @@
       </div>
       <div class="task-list">
           <transition-group name="bounceLeft" tag="ul"  class="list-group test">
-              <li @click="showSlideToggle($event)" v-for="(task,index) in dayTaskList" :key="index">
+              <li @click="showSlideToggle($event)" v-for="(task,index) in dayTaskList.list" :key="index">
                   <div class="index">{{index + 1}}</div>
                   <div :class="{addlinethrough : task.state}" class="task">{{task.content}}</div>
                   <div @click="showDetail($event)" class="more">.<br>.<br>.
@@ -33,7 +33,7 @@ export default {
   data () {
       return {
           taskInput:"",
-          dayTaskList:[],
+          dayTaskList: {},
           nowTargetE:""//点击遮罩隐藏more
     }
   },
@@ -44,7 +44,7 @@ export default {
         addTask:function () {
             if (this.taskInput == "")
                 return false
-            this.dayTaskList.push({content:this.taskInput,state:false})
+            this.dayTaskList.list.push({content:this.taskInput,state:false})
             this.taskInput=""
             // store.set("dayTaskList",this.dayTaskList)
         },
@@ -53,7 +53,7 @@ export default {
          * @param event
          */
         finished:function (num) {
-            this.dayTaskList[num].state = !this.dayTaskList[num].state
+            this.dayTaskList.list[num].state = !this.dayTaskList.list[num].state
             store.set("dayTaskList",this.dayTaskList)
         },
 
@@ -62,14 +62,14 @@ export default {
          * @param index
          */
         deleteTask:function (index) {
-            this.dayTaskList.splice(index,1)
+            this.dayTaskList.list.splice(index,1)
             store.set("dayTaskList",this.dayTaskList)
         },
         /**
          * 初始化页面中需要使用的taskList
          */
         initTaskList:function(){
-           this.dayTaskList=store.get("dayTaskList")?store.get("dayTaskList") : []
+           this.dayTaskList=store.get("dayTaskList")?store.get("dayTaskList") : {time:new Date().getTime(),list:[]}
         },
         /**
          * 展示备注
@@ -107,15 +107,41 @@ export default {
             let e = event.currentTarget
             let targetE = $(e).parent().parent().parent().children(".remarks")
             targetE.slideToggle()
+        },
+        /**
+         * 0点清空今日计划并加入到历史计划中
+         */
+        /**
+         * 这里有一个问题：关于setInterval和setIimeout传入函数时，函数中的this会指向window对象
+         * 这有三种解决方案：
+         * 1. 定时器内的函数利用闭包来访问这个变量
+         * 2. 利用bind()方法 setTimeout(function(){ console.log(this.num);}.bind(this), 1000)
+         * 3. 箭头函数ES6中的箭头函数完全修复了this的指向，this总是指向词法作用域，也就是外层调用者obj，
+         */
+        addHistory:function(){
+            let now = new Date().getDate()
+            let oldTime = new Date(1515411445837).getDate()
+            if (now != oldTime) {
+                let historyTask = store.get("historyTaskList") ? store.get("historyTaskList") : []
+                if (this.dayTaskList.list.length != 0){
+                    historyTask.push(this.dayTaskList)
+                    store.set("historyTaskList",historyTask)
+                    store.remove("dayTaskList")
+                    this.dayTaskList = {}
+                }
+            }
+
         }
 
     },
     mounted(){
         this.initTaskList()
+        this.addHistory()
+
     },
     watch:{
-        dayTaskList:function (newdayTaskList) {
-            store.set("dayTaskList",newdayTaskList)
+        'dayTaskList.list': function (newdayTaskList) {
+            store.set("dayTaskList",this.dayTaskList)
         }
     },
 }
