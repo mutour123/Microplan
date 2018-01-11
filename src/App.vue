@@ -33,7 +33,7 @@ export default {
         return{
             actionList:[
                 "今日计划",
-                "周计划",
+                "朋友圈",
                 "历史"
             ],
             action: 0

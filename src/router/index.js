@@ -28,7 +28,7 @@ export default new Router({
           component: Day
       },
       {
-          path: './share',
+          path: '/share',
           name: 'Share',
           component: Share
       }

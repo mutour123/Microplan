@@ -120,7 +120,7 @@ export default {
          */
         addHistory:function(){
             let now = new Date().getDate()
-            let oldTime = new Date(1515411445837).getDate()
+            let oldTime = new Date(this.dayTaskList.time).getDate()
             if (now != oldTime) {
                 let historyTask = store.get("historyTaskList") ? store.get("historyTaskList") : []
                 if (this.dayTaskList.list.length != 0){
