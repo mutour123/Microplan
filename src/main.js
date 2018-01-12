@@ -8,9 +8,11 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'vue2-animate/dist/vue2-animate.min.css';
 import 'animate.css'
 import store from './store/index'
+import axios from 'axios'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.prototype.$http = axios
 // Vue.prototype.storage=Storage
 
 /* eslint-disable no-new */

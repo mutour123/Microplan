@@ -1,7 +1,7 @@
 <template>
   <div id="app">
       <el-container>
-          <el-header>{{actionList[action]}}</el-header>
+          <el-header>{{actionList[action]}}<span @click="getDayTaskList" class="share">分享</span></el-header>
           <el-main>
               <keep-alive>
                   <transition mode="out-in"
@@ -12,7 +12,7 @@
           </el-main>
           <el-footer>
               <router-link @click.native="changeAction(0)" to="/day">今日计划</router-link>
-              <router-link @click.native="changeAction(1)" to="/share">好友圈</router-link>
+              <router-link @click.native="changeAction(1)" to="/share">分享圈</router-link>
               <router-link @click.native="changeAction(2)" to="/history">历史</router-link>
           </el-footer>
       </el-container>
@@ -33,7 +33,7 @@ export default {
         return{
             actionList:[
                 "今日计划",
-                "朋友圈",
+                "分享圈",
                 "历史"
             ],
             action: 0
@@ -64,6 +64,26 @@ export default {
          */
         changeAction: function (num) {
             this.action = num
+        },
+        /**
+         * 得到要分享的今日计划
+         */
+        getDayTaskList: function (){
+            let shareTaskIist = store.get("dayTaskList") ? store.get("dayTaskList"):{}
+            if (shareTaskIist.list.length){
+                this.$http.post("/api/addshare",{
+                    shareList : JSON.stringify(shareTaskIist),
+                    shareUser : "念念公子"
+                })
+                    .then(function(res){
+                        if(res.data.ok == 1 )
+                            console.log("成功")
+                    })
+                    .catch(function(err){
+                        console.log(err)
+                    })
+            }
+
         }
     },
     mounted:function(){
@@ -152,7 +172,9 @@ export default {
         top -13rem
     .changeBtnDay
         top -6.5rem
-
+    .share
+        display inline-block
+        float right
 
 
 
