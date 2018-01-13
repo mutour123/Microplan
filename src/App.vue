@@ -72,7 +72,7 @@ export default {
             let shareTaskIist = store.get("dayTaskList") ? store.get("dayTaskList"):{}
             if (shareTaskIist.list.length){
                 this.$http.post("/api/addshare",{
-                    shareList : JSON.stringify(shareTaskIist),
+                    shareList : shareTaskIist,
                     shareUser : "念念公子"
                 })
                     .then(function(res){
