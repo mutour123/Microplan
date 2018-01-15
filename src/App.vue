@@ -13,7 +13,7 @@
           <el-footer>
               <router-link @click.native="changeAction(0)" to="/day">今日计划</router-link>
               <router-link @click.native="changeAction(1)" to="/share">分享圈</router-link>
-              <router-link @click.native="changeAction(2)" to="/history">历史</router-link>
+              <router-link @click.native="changeAction(2)" to="/mine">我的</router-link>
           </el-footer>
       </el-container>
      <!-- <div @click="showAdd($event)" class="edit-btn">
@@ -34,7 +34,7 @@ export default {
             actionList:[
                 "今日计划",
                 "分享圈",
-                "历史"
+                "我的"
             ],
             action: 0
         }
@@ -69,11 +69,14 @@ export default {
          * 得到要分享的今日计划
          */
         getDayTaskList: function (){
+            let username = store.get("username") ? store.get("username") :""
+            if(username == "")
+                return false
             let shareTaskIist = store.get("dayTaskList") ? store.get("dayTaskList"):{}
             if (shareTaskIist.list.length){
                 this.$http.post("/api/addshare",{
                     shareList : shareTaskIist,
-                    shareUser : "念念公子"
+                    shareUser : username
                 })
                     .then(function(res){
                         if(res.data.ok == 1 )

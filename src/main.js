@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
+import VueRouter from 'vue-router'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'vue2-animate/dist/vue2-animate.min.css';
 import 'animate.css'
@@ -11,7 +12,8 @@ import store from './store/index'
 import axios from 'axios'
 
 Vue.config.productionTip = false
-Vue.use(ElementUI)
+Vue.use(VueRouter)
+Vue.use(ElementUI);
 Vue.prototype.$http = axios
 // Vue.prototype.storage=Storage
 

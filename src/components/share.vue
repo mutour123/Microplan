@@ -28,7 +28,7 @@
                 </ul>
                 <div :class="{commentInputconShow : comment0InputconIsShow}" class="commentInputcon">
                     <input v-model="comment0Input" class="commentInput" type="text" placeholder="评论">
-                    <div @click="addCommentInput(nowdata.index)" class="commentBtn">提交</div>
+                    <div @click="addCommentInput(nowdata.index,nowdata.shareUser)" class="commentBtn">提交</div>
                 </div>
                 <div :class="{commentInputconShow : comment1InputconIsShow}" class="commentInputcon">
                     <input v-model="comment1Input" class="commentInput" type="text" placeholder="评论">
@@ -84,14 +84,14 @@
             addComment: function(){
                 this.comment0InputconIsShow = !this.comment0InputconIsShow
             },
-            addCommentInput(index){
+            addCommentInput(index,username){
                 let  _this = this
                 _this.comment0InputconIsShow = !_this.comment0InputconIsShow
                 if (!this.comment0Input)
                     return
                 let json = {
                     "commentPeo": "念念",
-                    "toPeo": "念念公子",
+                    "toPeo": username,
                     "comment": _this.comment0Input,
                     "grade" : 0,
                     "index": index
