@@ -32,15 +32,13 @@
                 </div>
                 <div :class="{commentInputconShow : comment1InputconIsShow}" class="commentInputcon">
                     <input v-model="comment1Input" class="commentInput" type="text" placeholder="评论">
-                    <div @click="addComment1Input($event,nowdata.index)" class="commentBtn">提交</div>
+                    <div @click="addComment1Input(nowdata.index)" class="commentBtn">提交</div>
                 </div>
             </div>
             <div class="comment">
                 <ul>
-                    <!--<li class="commentList"><span class="username">念念公子</span>：<span>好好学习，天天向上。你好我好大家好你好我好大家好你好我好大家好。</span></li>-->
-                    <!--<li><span class="username">念念公子</span>：<span>好好学习，天天向上。</span></li>-->
-                    <li @click="addHuifu($event,nowdata.index)" class="commentList" v-for="item in nowdata.comment">
-                        <span class="username">{{item.commentPeo}}</span>
+                    <li @click="addHuifu($event)" class="commentList" v-for="item in nowdata.comment">
+                        <span class="username targ">{{item.commentPeo}}</span>
                         <span v-if="item.grade">回复</span>
                         <span class="username" v-if="item.grade">{{item.toPeo}}</span>:
                         <span >{{item.comment}}</span>
@@ -61,7 +59,9 @@
                 comment1InputconIsShow:false,
                 comment0Input:"好好学习，天天向上",
                 comment1Input:"你也要好好学习，天天向上",
-                grade: 0
+                grade: 0,
+                targetP:"",
+                targetParent:""
             }
         },
         methods:{
@@ -89,47 +89,55 @@
                 _this.comment0InputconIsShow = !_this.comment0InputconIsShow
                 if (!this.comment0Input)
                     return
+                let commentPeo = store.get("username")
                 let json = {
-                    "commentPeo": "念念",
+                    "commentPeo": commentPeo,
                     "toPeo": username,
                     "comment": _this.comment0Input,
                     "grade" : 0,
                     "index": index
                 }
-                console.log(json)
                 this.$http.post('/api/addcomment',json)
                     .then(function(res){
-                        console.log("ok")
-
+                        if (res.data.ok == 1) _this.getShareList()
                     })
                     .catch(function(err){
                         console.log(err)
                     })
             },
-            addComment1Input(event,index){
+            addComment1Input(index){
                 this.comment1InputconIsShow = !this.comment1InputconIsShow
-                let e = event.currentTarget
                 let  _this = this
                 if (!this.comment1Input)
                     return
+                let commentPeo = store.get("username")
                 let json = {
-                    "commentPeo": "念念公子",
-                    "toPeo": "念念",
+                    "commentPeo": commentPeo,
+                    "toPeo": _this.targetP,
                     "comment": _this.comment1Input,
                     "grade" : 1,
                     "index": index
                 }
+
                 this.$http.post('/api/addcomment',json)
                     .then(function(res){
-                        console.log("ok")
+                        if(res.data.ok == 1){
+                            _this.getShareList()
+                        }
+
                     })
                     .catch(function(err){
                         console.log(err)
                     })
 
             },
-            addHuifu(event,index){
+            addHuifu(event){
                 this.comment1InputconIsShow = !this.comment1InputconIsShow
+                let e = event
+                let target = e.currentTarget
+                this.targetParent = $(target).parent()
+                let targP = $(target).children(".targ")
+                this.targetP = targP.text()
             }
         },
         mounted(){
