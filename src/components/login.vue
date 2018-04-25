@@ -30,6 +30,7 @@
                 }).then(function(res){
                     if(res.data.state === 1){
                         store.set('username',_this.username)
+                        //没有做提示
                         _this.$router.push('/day')
                     }
                 }).catch(function(err){

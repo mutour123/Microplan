@@ -12,6 +12,7 @@
           </el-main>
           <el-footer>
               <router-link @click.native="changeAction(0)" to="/day">今日计划</router-link>
+              <!--<router-link @click.native="changeAction(1)" to="/history">历史</router-link>-->
               <router-link @click.native="changeAction(1)" to="/share">分享圈</router-link>
               <router-link @click.native="changeAction(2)" to="/mine">我的</router-link>
           </el-footer>
